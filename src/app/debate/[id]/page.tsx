@@ -213,7 +213,7 @@ export default function DebateDetailPage() {
         <h3 className="text-lg font-medium text-white mb-6">Comments ({debate._count.comments})</h3>
         <div className="space-y-0 mb-8">
           {debate.comments.map(comment => (
-            <Comment key={comment.id} comment={comment} />
+            <Comment key={comment.id} comment={comment} debateId={debate.id} />
           ))}
         </div>
 

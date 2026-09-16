@@ -39,8 +39,13 @@ export function Header() {
               <div className="w-8 h-8 rounded-full bg-gray-700 animate-pulse" aria-hidden="true" />
             ) : session ? (
               <div className="flex items-center gap-3">
-                <Link href="/profile" className="text-sm text-gray-400 hover:text-white transition-colors">
+                <Link href="/profile" className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
                   {session.user?.name || session.user?.email}
+                  {session.user?.role === 'ADMIN' && (
+                    <span className="px-2 py-0.5 bg-red-600 text-white text-xs font-medium rounded uppercase">
+                      MOD
+                    </span>
+                  )}
                 </Link>
                 <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: '/' })}>
                   Sign out
