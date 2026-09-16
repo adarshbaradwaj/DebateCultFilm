@@ -47,6 +47,7 @@ export default function MovieDebatesPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [createError, setCreateError] = useState('')
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 })
 
   const fetchMovie = async () => {
@@ -122,15 +123,23 @@ export default function MovieDebatesPage() {
 
   const handleCreateDebate = async (title: string, content: string) => {
     if (!movie) return
-    const response = await fetch('/api/debates', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ movieId: movie.localId, title, content }),
-    })
-    if (!response.ok) throw new Error('Failed to create debate')
-    const newDebate = await response.json()
-    setDebates(prev => [newDebate, ...prev])
-    setShowCreateModal(false)
+    setCreateError('')
+    try {
+      const response = await fetch('/api/debates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ movieId: movie.localId, title, content }),
+      })
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to create debate')
+      }
+      const newDebate = await response.json()
+      setDebates(prev => [newDebate, ...prev])
+      setShowCreateModal(false)
+    } catch (error) {
+      setCreateError(error instanceof Error ? error.message : 'Failed to create debate')
+    }
   }
 
   const handleOpenDebate = (debateId: string) => {
@@ -263,6 +272,11 @@ export default function MovieDebatesPage() {
             </button>
             <h2 id="create-debate-modal-title" className="text-lg font-medium text-white mb-2">Create a debate</h2>
             <p className="text-gray-400 mb-6">About: <span className="text-white">{movie.title}</span></p>
+            {createError && (
+              <div className="mb-4 p-3 bg-red-900/30 border border-red-700 rounded text-red-400 text-sm" role="alert">
+                {createError}
+              </div>
+            )}
             <form onSubmit={async (e) => {
               e.preventDefault()
               const formData = new FormData(e.currentTarget)
