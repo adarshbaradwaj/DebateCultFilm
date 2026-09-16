@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const createCommentSchema = z.object({
   debateId: z.string().cuid(),
   content: z.string().min(1, 'Comment cannot be empty').max(2000),
@@ -37,13 +39,13 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(comment, { status: 201 })
-} catch (error) {
-      if (error instanceof z.ZodError) {
-        return NextResponse.json({ error: error.issues[0].message }, { status: 400 })
-      }
-      console.error('Create comment error:', error)
-      return NextResponse.json({ error: 'Failed to create comment' }, { status: 500 })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: error.issues[0].message }, { status: 400 })
     }
+    console.error('Create comment error:', error)
+    return NextResponse.json({ error: 'Failed to create comment' }, { status: 500 })
+  }
 }
 
 export async function GET(request: NextRequest) {

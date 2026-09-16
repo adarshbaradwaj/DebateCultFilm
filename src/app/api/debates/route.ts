@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+
 const createDebateSchema = z.object({
   movieId: z.string().cuid(),
   title: z.string().min(5, 'Title must be at least 5 characters').max(200),
