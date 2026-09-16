@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { Button } from './ui/Button'
 
@@ -28,12 +27,12 @@ interface DebateCardProps {
   onClick?: () => void
 }
 
-export function DebateCard({ debate, onVote }: DebateCardProps) {
+export function DebateCard({ debate, onVote, onClick }: DebateCardProps) {
   const totalVotes = debate.agreeCount + debate.disagreeCount
 
   return (
     <article className="border-b border-gray-800 py-6 last:border-0">
-      <Link href={`/movie/debate/${debate.id}`} className="block">
+      <div className="cursor-pointer" onClick={onClick || (() => {})}>
         <h3 className="text-lg font-medium text-white mb-2 hover:underline">{debate.title}</h3>
         <p className="text-gray-400 text-sm mb-4 line-clamp-2">{debate.content}</p>
 
@@ -51,7 +50,7 @@ export function DebateCard({ debate, onVote }: DebateCardProps) {
             <time dateTime={debate.createdAt}>{formatDistanceToNow(new Date(debate.createdAt), { addSuffix: true })}</time>
           </div>
         </div>
-      </Link>
+      </div>
 
       <div className="mt-4 flex items-center gap-4">
         <div className="flex items-center gap-2">
@@ -88,6 +87,10 @@ export function DebateCard({ debate, onVote }: DebateCardProps) {
           </svg>
           <span>{debate._count.comments}</span>
         </div>
+
+        <Button variant="outline" size="sm" onClick={onClick} className="ml-4">
+          View
+        </Button>
       </div>
     </article>
   )

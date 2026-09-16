@@ -48,6 +48,8 @@ export default function MovieDebatesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [createError, setCreateError] = useState('')
+  const [createSuccess, setCreateSuccess] = useState(false)
+  const [createdDebateId, setCreatedDebateId] = useState<string | null>(null)
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 })
 
   const fetchMovie = async () => {
@@ -136,7 +138,14 @@ export default function MovieDebatesPage() {
       }
       const newDebate = await response.json()
       setDebates(prev => [newDebate, ...prev])
-      setShowCreateModal(false)
+      setCreatedDebateId(newDebate.id)
+      setCreateSuccess(true)
+      // Auto-close after 2 seconds
+      setTimeout(() => {
+        setShowCreateModal(false)
+        setCreateSuccess(false)
+        setCreatedDebateId(null)
+      }, 2000)
     } catch (error) {
       setCreateError(error instanceof Error ? error.message : 'Failed to create debate')
     }
@@ -275,6 +284,23 @@ export default function MovieDebatesPage() {
             {createError && (
               <div className="mb-4 p-3 bg-red-900/30 border border-red-700 rounded text-red-400 text-sm" role="alert">
                 {createError}
+              </div>
+            )}
+            {createSuccess && createdDebateId && (
+              <div className="mb-4 p-3 bg-green-900/30 border border-green-700 rounded text-green-400 text-sm" role="alert">
+                <p className="font-medium mb-2">Debate created successfully!</p>
+                <Button 
+                  variant="primary" 
+                  size="sm"
+                  onClick={() => {
+                    router.push(`/debate/${createdDebateId}`)
+                    setShowCreateModal(false)
+                    setCreateSuccess(false)
+                    setCreatedDebateId(null)
+                  }}
+                >
+                  View Debate
+                </Button>
               </div>
             )}
             <form onSubmit={async (e) => {
