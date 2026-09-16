@@ -19,6 +19,7 @@ interface MovieData {
   debateCount: number
   ratingCount: number
   averageRating: number | null
+  localId: string
 }
 
 interface DebateData {
