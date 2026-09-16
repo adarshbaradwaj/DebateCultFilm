@@ -64,7 +64,7 @@ export default function MovieDebatesPage() {
   const fetchDebates = async (page = 1, query = '') => {
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/debates?movieId=${movie?.id}&page=${page}&limit=20${query ? `&q=${encodeURIComponent(query)}` : ''}`)
+      const response = await fetch(`/api/debates?movieId=${movie?.localId}&page=${page}&limit=20${query ? `&q=${encodeURIComponent(query)}` : ''}`)
       if (response.ok) {
         const data = await response.json()
         setDebates(data.debates)
@@ -125,7 +125,7 @@ export default function MovieDebatesPage() {
     const response = await fetch('/api/debates', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ movieId: movie.id, title, content }),
+      body: JSON.stringify({ movieId: movie.localId, title, content }),
     })
     if (!response.ok) throw new Error('Failed to create debate')
     const newDebate = await response.json()
