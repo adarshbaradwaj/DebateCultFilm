@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { X } from 'lucide-react'
 import { StarRating } from './ui/StarRating'
 import { Button } from './ui/Button'
+import { useSession } from 'next-auth/react'
 
 interface RatingModalProps {
   movie: {
@@ -21,6 +22,7 @@ interface RatingModalProps {
 }
 
 export function RatingModal({ movie, userRating, averageRating, ratingCount, onClose, onSubmit }: RatingModalProps) {
+  const { data: session } = useSession()
   const [rating, setRating] = useState(userRating || 0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -28,6 +30,11 @@ export function RatingModal({ movie, userRating, averageRating, ratingCount, onC
   const handleSubmit = async () => {
     if (rating === 0) {
       setError('Please select a rating')
+      return
+    }
+
+    if (!session) {
+      setError('You need to sign in to rate movies')
       return
     }
 

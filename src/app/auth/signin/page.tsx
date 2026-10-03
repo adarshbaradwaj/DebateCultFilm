@@ -36,7 +36,7 @@ export default function SignInPage() {
         router.refresh()
       }
     } catch {
-      setError('Something went wrong. Please try again.')
+      setError('Unable to sign in right now. Please try again.')
     } finally {
       setIsLoading(false)
     }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
@@ -44,22 +45,21 @@ export default function SignUpPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.error || 'Something went wrong. Please try again.')
+        setError(data.error || 'Something went wrong while creating your account. Please try again.')
         return
       }
 
-      const result = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      // Use NextAuth's signIn to create session after successful registration
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       })
 
-      // Use NextAuth signIn
-      const signInResponse = await fetch('/api/auth/callback/credentials', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, csrfToken: '' }),
-      })
+      if (result?.error) {
+        setError('Account created but failed to sign in. Please sign in manually.')
+        return
+      }
 
       router.push(callbackUrl)
       router.refresh()

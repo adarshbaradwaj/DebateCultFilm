@@ -59,20 +59,16 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '20')
 
-    if (!movieId) {
-      return NextResponse.json({ error: 'Movie ID required' }, { status: 400 })
+    // If no movieId, fetch global debates
+    const where: any = {}
+    if (movieId) {
+      where.movieId = movieId
     }
-
-    const movie = await prisma.movie.findUnique({ where: { id: movieId } })
-    if (!movie) {
-      return NextResponse.json({ error: 'Movie not found' }, { status: 404 })
-    }
-
-    const where: any = { movieId }
     if (query) {
       where.OR = [
         { title: { contains: query, mode: 'insensitive' } },
         { content: { contains: query, mode: 'insensitive' } },
+        { movie: { title: { contains: query, mode: 'insensitive' } } },
       ]
     }
 
@@ -80,11 +76,15 @@ export async function GET(request: NextRequest) {
       prisma.debate.findMany({
         where,
         include: {
-          user: { select: { id: true, name: true, image: true } },
+          user: { select: { id: true, name: true, image: true, role: true } },
+          movie: { select: { id: true, tmdbId: true, title: true, posterPath: true } },
           _count: { select: { votes: true, comments: true } },
           votes: { select: { type: true, userId: true } },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: [
+          { updatedAt: 'desc' },
+          { createdAt: 'desc' },
+        ],
         skip: (page - 1) * limit,
         take: limit,
       }),

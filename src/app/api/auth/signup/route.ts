@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     console.error('Signup error:', error)
     return NextResponse.json(
-      { error: 'Something went wrong. Please try again.' },
+      { error: 'Something went wrong while creating your account. Please try again.' },
       { status: 500 }
     )
   }
