@@ -56,6 +56,7 @@ export async function GET(
 
     return NextResponse.json({
       ...tmdbMovie,
+      genres: tmdbMovie.genres || [],
       posterUrl: getPosterUrl(tmdbMovie.poster_path),
       backdropUrl: getPosterUrl(tmdbMovie.backdrop_path, 'w780'),
       localId: localMovie.id,
