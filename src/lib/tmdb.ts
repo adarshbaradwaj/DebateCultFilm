@@ -67,9 +67,8 @@ export async function searchMovies(query: string, page = 1): Promise<TMDBSearchR
 }
 
 export async function getMovieDetails(movieId: number): Promise<TMDBMovieDetails> {
-  return tmdbFetch<TMDBMovieDetails>(`/movie/${movieId}`, {
-    append_to_response: 'credits,keywords',
-  })
+  // Remove append_to_response to avoid potential undefined arrays
+  return tmdbFetch<TMDBMovieDetails>(`/movie/${movieId}`)
 }
 
 export async function getTrendingMovies(page = 1): Promise<TMDBSearchResponse> {
