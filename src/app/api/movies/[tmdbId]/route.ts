@@ -54,11 +54,16 @@ export async function GET(
       ? localMovie.ratings[0].value
       : null
 
+    // Ensure all TMDB fields have safe defaults
+    const safeGenres = Array.isArray(tmdbMovie.genres) ? tmdbMovie.genres : []
+    const safeBackdropPath = tmdbMovie.backdrop_path ?? null
+    const safePosterPath = tmdbMovie.poster_path ?? null
+
     return NextResponse.json({
       ...tmdbMovie,
-      genres: tmdbMovie.genres || [],
-      posterUrl: getPosterUrl(tmdbMovie.poster_path),
-      backdropUrl: getPosterUrl(tmdbMovie.backdrop_path, 'w780'),
+      genres: safeGenres,
+      posterUrl: getPosterUrl(safePosterPath),
+      backdropUrl: getPosterUrl(safeBackdropPath, 'w780'),
       localId: localMovie.id,
       debateCount: localMovie._count.debates,
       ratingCount: localMovie._count.ratings,
