@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       },
     ],
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    contentSecurityPolicy: "default-src 'self'; script-src 'self'; img-src 'self' https://image.tmdb.org data:; style-src 'self' 'unsafe-inline';",
   },
 };
 
