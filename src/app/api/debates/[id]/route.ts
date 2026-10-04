@@ -20,6 +20,12 @@ export async function GET(
         movie: { select: { id: true, tmdbId: true, title: true, posterPath: true } },
         _count: { select: { votes: true, comments: true } },
         votes: { select: { userId: true, type: true } },
+        comments: {
+          include: {
+            user: { select: { id: true, name: true, image: true } },
+          },
+          orderBy: { createdAt: 'asc' },
+        },
       },
     })
 
